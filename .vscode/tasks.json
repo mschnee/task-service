@@ -10,8 +10,9 @@
       "args": ["--silent", "run", "build:watch"],
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": true,
       },
+      "isBackground": true,
       "problemMatcher": "$tsc-watch"
     },
     {

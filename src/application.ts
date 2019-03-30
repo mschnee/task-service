@@ -16,12 +16,6 @@ export class TaskServiceApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    // set up environment variables
-    this.bind('datasources.config.taskdb').to({
-      url:
-        process.env.TASKDB_URL || 'mongodb://localuser:localpass@:5432/authdb',
-    });
-
     // Set up the custom sequence
     this.sequence(MySequence);
 
@@ -41,16 +35,6 @@ export class TaskServiceApplication extends BootMixin(
         // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
         extensions: ['.controller.js'],
-        nested: true,
-      },
-      repositories: {
-        dirs: ['repositories'],
-        extensions: ['.repository.js'],
-        nested: true,
-      },
-      datasources: {
-        dirs: ['datasources'],
-        extensions: ['.datasource.js'],
         nested: true,
       },
     };

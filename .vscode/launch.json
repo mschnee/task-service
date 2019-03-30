@@ -10,8 +10,10 @@
       "name": "Launch Program",
       "program": "${workspaceFolder}\\index.js",
       "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ]
+        "${workspaceFolder}/dist/**/*.js"
+      ],
+      "sourceMaps": true,
+      "preLaunchTask": "Watch and Compile Project"
     }
   ]
 }
