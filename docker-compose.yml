@@ -1,0 +1,21 @@
+version: '3'
+volumes:
+  taskdb:
+services:
+  task-service:
+    depends_on:
+      - task_db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - TASKDB_URL
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+  task_db:
+    image: mongo:3.6.11
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${TASKDB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${TASKDB_PASSWORD}
