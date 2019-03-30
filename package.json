@@ -32,7 +32,11 @@
     "start": "env-cmd ./.env.local node .",
     "prepublishOnly": "npm run test",
     "docker:run": "env-cmd ./.env docker-compose up",
-    "docker:config": "env-cmd ./.env docker-compose config"
+    "docker:config": "env-cmd ./.env docker-compose config",
+    "it:before": "docker-compose -f docker-compose.base.yml -f docker-compose.test.yml up -d --build ",
+    "it:after": "docker-compose -f docker-compose.base.yml -f docker-compose.test.yml stop && docker-compose -f docker-compose.base.yml -f docker-compose.test.yml rm -fv",
+    "it:all": "nyc ava -s \"./src/__tests__/**/*.acceptance.ts\"",
+    "it":"run-s -c it:before it:all it:after"
   },
   "repository": {
     "type": "git"
@@ -81,9 +85,21 @@
     "@types/passport-http": "^0.3.7",
     "@types/passport-jwt": "^3.0.1",
     "@types/passport-local": "^1.0.33",
+    "ava": "^1.4.1",
     "cross-env": "^5.2.0",
+    "nyc": "^13.3.0",
     "rimraf": "^2.6.3",
+    "ts-node": "^8.0.3",
     "tslint": "^5.12.0",
     "typescript": "^3.3.1"
-  }
+  },
+  "ava": {
+        "compileEnhancements": false,
+        "extensions": [
+            "ts"
+        ],
+        "require": [
+            "ts-node/register"
+        ]
+    }
 }

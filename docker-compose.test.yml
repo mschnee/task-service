@@ -1,0 +1,12 @@
+version: '3'
+volumes:
+    testvol:
+services:
+    task_db:
+        volumes:
+            - testvol:/data/db
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=test_mongo_user
+            - MONGO_INITDB_ROOT_PASSWORD=test_mongo_password
+    task_cache:
+        command: redis-server --appendonly yes --requirepass test_redis_password

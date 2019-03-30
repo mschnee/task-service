@@ -1,0 +1,25 @@
+version: '3'
+volumes:
+    taskdb:
+    redis:
+services:
+    task_db:
+        image: mongo:3.6.11
+        ports:
+            - 27017:27017
+        expose:
+            - 27017
+        volumes:
+            - taskdb:/data/db
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${TASKDB_USER}
+            - MONGO_INITDB_ROOT_PASSWORD=${TASKDB_PASSWORD}
+    task_cache:
+        image: redis:5.0.4
+        command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+        volumes:
+            - redis:/data
+        ports:
+            - 6379:6379
+        expose:
+            - 6379
