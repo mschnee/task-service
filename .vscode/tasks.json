@@ -16,6 +16,17 @@
       "problemMatcher": "$tsc-watch"
     },
     {
+      "label": "Compile Project",
+      "type": "shell",
+      "command": "npm",
+      "args": ["--silent", "run", "build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true,
+      },
+      "problemMatcher": "$tsc-watch"
+    },
+    {
       "label": "Build, Test and Lint",
       "type": "shell",
       "command": "npm",

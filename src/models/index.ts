@@ -1,2 +1,4 @@
-export * from './user.model';
 export * from './task.model';
+
+import * as User from './user';
+export {User};

@@ -13,7 +13,8 @@
         "${workspaceFolder}/dist/**/*.js"
       ],
       "sourceMaps": true,
-      "preLaunchTask": "Watch and Compile Project"
+      "preLaunchTask": "Compile Project",
+      "envFile": "${workspaceFolder}/.env.local"
     }
   ]
 }

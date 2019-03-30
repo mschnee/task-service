@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model()
-export class Task extends Entity {
+export class TaskModel extends Entity {
   @property({
     type: 'string',
     required: true,
@@ -33,8 +33,7 @@ export class Task extends Entity {
   })
   id: string;
 
-
-  constructor(data?: Partial<Task>) {
+  constructor(data?: Partial<TaskModel>) {
     super(data);
   }
 }

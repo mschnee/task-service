@@ -1,10 +1,10 @@
 {
-  "name": "task_db",
-  "connector": "mongodb",
-  "url": "mongodb://localuser:localpass@localhost:27017",
-  "host": "",
-  "port": 0,
-  "user": "",
-  "password": "",
-  "database": ""
+    "name": "task_db",
+    "connector": "mongodb",
+    "url": "mongodb://localuser:localpass@localhost:27017",
+    "host": "",
+    "port": 0,
+    "user": "",
+    "password": "",
+    "database": ""
 }

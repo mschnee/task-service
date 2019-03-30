@@ -61,5 +61,6 @@ typings/
 api-docs/
 
 # Transpiled JavaScript files from Typescript
-/dist
-.env
+/dist*
+.env*
+!.env.example
