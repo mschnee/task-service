@@ -90,6 +90,15 @@ export class V1UserController {
         })
         login: User.LoginRequest,
     ): Promise<User.CachedModel> {
+        const userResult = await this.userRepo.find({
+            where: {
+                email: login.email,
+            },
+        });
+
+        if (userResult && userResult.length > 0) {
+            throw new HttpErrors.Conflict('Account already exists');
+        }
         return new Promise((resolve, reject) => {
             try {
                 bcrypt.hash(login.password, 10, async (err, hash) => {

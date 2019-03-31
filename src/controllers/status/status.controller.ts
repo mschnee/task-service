@@ -2,8 +2,8 @@ import {inject} from '@loopback/context';
 import {get} from '@loopback/rest';
 import {repository} from '@loopback/repository';
 
-import {UserRepository} from '../repositories';
-import {RedisDataSource, TaskDbDataSource} from '../datasources';
+import {UserRepository} from '../../repositories';
+import {RedisDataSource, TaskDbDataSource} from '../../datasources';
 
 export class StatusController {
     constructor(

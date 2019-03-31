@@ -6,7 +6,7 @@ Dependencies:
 
 -   [docker](https://www.docker.com/get-started)
 -   [NodeJS](https://nodejs.org)
--   ``npm run install`
+-   `npm run install`
 
 # Testing
 

@@ -36,7 +36,7 @@
     "preit": "npm run clean && npm run build",
     "it:before": "docker-compose  -f docker-compose.test.yml up -d --build ",
     "it:after": "docker-compose -f docker-compose.test.yml down -v",
-    "it:all": "env-cmd ./.env.test nyc ava -s \"./dist/__tests__/**/*.acceptance.js\"",
+    "it:all": "env-cmd ./.env.test nyc ava -s \"./dist/**/__tests__/**/*.acceptance.js\"",
     "it":"run-s -c it:before it:all it:after"
   },
   "repository": {

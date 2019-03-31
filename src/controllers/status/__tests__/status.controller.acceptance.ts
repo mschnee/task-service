@@ -1,8 +1,8 @@
 import test, {ExecutionContext} from 'ava';
 
 import {Client} from '@loopback/testlab';
-import {TaskServiceApplication} from '../..';
-import {setupApplication} from './test-helper';
+import {TaskServiceApplication} from '../../..';
+import {setupApplication} from '../../../__tests__/acceptance/test-helper';
 
 interface TestContext extends ExecutionContext {
     context: {
