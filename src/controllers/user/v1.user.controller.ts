@@ -4,12 +4,26 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import {AuthenticationBindings, authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/context';
-import {get, post, requestBody, HttpErrors} from '@loopback/rest';
+import {get, post, requestBody, HttpErrors, param} from '@loopback/rest';
+import {ParameterObject} from '@loopback/openapi-v3-types';
 
 import {repository} from '@loopback/repository';
 
 import {UserRepository, CachedUserModelRepository} from '../../repositories';
 import {User} from '../../models';
+
+const userSpec = {
+    'application/json': {schema: {'x-ts-type': User.CachedModel}, example: new User.CachedModel({email: 'user@test.com', userId: '1a4'})},
+};
+
+const authSpec: ParameterObject = {
+    name: 'Authorization',
+    description: 'Authorization Bearer JWT token.',
+    in: 'header',
+    required: true,
+    schema: {type: 'string'},
+    example: 'Bearer aaaabbbbccccddddeee....zz',
+};
 
 export class V1UserController {
     constructor(
@@ -20,12 +34,29 @@ export class V1UserController {
     ) {}
 
     @authenticate('JwtStrategy')
-    @get('/v1/user/whoami')
-    async whoAmI(@inject(AuthenticationBindings.CURRENT_USER) user: User.CachedModel): Promise<User.CachedModel> {
-        return user.getId();
+    @get('/v1/user/whoami', {
+        responses: {
+            '200': {
+                description: "Responds with the user's email address",
+                content: {'application/text': {schema: {type: 'string', example: 'user@test.com'}}},
+            },
+        },
+    })
+    async whoAmI(@inject(AuthenticationBindings.CURRENT_USER) user: User.CachedModel, @param(authSpec) auth: string): Promise<string> {
+        return user.email;
     }
 
-    @post('/v1/user/login')
+    @post('/v1/user/login', {
+        responses: {
+            '200': {
+                description: 'User logged-in successfully',
+                content: userSpec,
+            },
+            '401': {
+                description: 'Failed to authenticate',
+            },
+        },
+    })
     async login(@requestBody() login: User.LoginRequest): Promise<User.LoginResponse> {
         const userResult = await this.userRepo.find({
             where: {
@@ -77,17 +108,19 @@ export class V1UserController {
         });
     }
 
-    @post('/v1/user/create')
-    async create(
-        @requestBody({
-            description: 'Login Request Body',
-            required: true,
-            content: {
-                'application/json': {
-                    schema: {type: 'object'},
-                },
+    @post('/v1/user/create', {
+        responses: {
+            '200': {
+                description: 'User created successfully',
+                content: userSpec,
             },
-        })
+            '409': {
+                description: 'An account with that email already exists',
+            },
+        },
+    })
+    async create(
+        @requestBody()
         login: User.LoginRequest,
     ): Promise<User.CachedModel> {
         const userResult = await this.userRepo.find({

@@ -1,6 +1,10 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
+@model({
+    title: 'Public User Model',
+    description: 'Public-facing User information',
+    settings: {strict: false},
+})
 export class CachedModel extends Entity {
     @property({
         type: 'string',

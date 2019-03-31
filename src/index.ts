@@ -10,6 +10,7 @@ export async function main(options: ApplicationConfig = {}) {
 
     const url = app.restServer.url;
     console.log(`Server is running at ${url}`);
+    console.log(`Browse the api at ${url}/explorer`);
 
     return app;
 }
