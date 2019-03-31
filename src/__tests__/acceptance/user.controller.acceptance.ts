@@ -10,20 +10,20 @@ let client: Client;
 const TEST_USERNAME = '__testemail@test.com';
 const TEST_PASSWORD = 'iamaprettyp4ssw04d!';
 
-test.before(async () => {
+test.beforeEach(async () => {
     ({app, client} = await setupApplication());
 });
 
-test.after(async () => {
+test.afterEach(async () => {
     await app.stop();
 });
 
-test('Should let me create a user.', async t => {
-    const failingWhoami = await client.get('/api/v1/user/whoami');
+test('Should let me create a user', async t => {
+    const failingWhoami = await client.get('/v1/user/whoami');
     t.is(failingWhoami.status, 401);
 
     const createResponse = await client
-        .post('/api/v1/user/create')
+        .post('/v1/user/create')
         .set('Content-Type', 'application/json')
         .send({
             email: TEST_USERNAME,
@@ -34,7 +34,7 @@ test('Should let me create a user.', async t => {
     t.truthy(createResponse.body.id);
 
     const loginResponse = await client
-        .post('/api/v1/user/create')
+        .post('/v1/user/login')
         .set('Content-Type', 'application/json')
         .send({
             email: TEST_USERNAME,
@@ -44,8 +44,8 @@ test('Should let me create a user.', async t => {
     t.is(loginResponse.status, 200);
     t.truthy(loginResponse.body.token);
 
-    const successfulWhoami = await client.get('/api/v1/user/whoami').set('Authorization', `bearer ${loginResponse.body.token}`);
+    const successfulWhoami = await client.get('/v1/user/whoami').set('Authorization', `bearer ${loginResponse.body.token}`);
 
     t.is(successfulWhoami.status, 200);
-    t.is(successfulWhoami.body, TEST_USERNAME);
+    t.is(successfulWhoami.text, TEST_USERNAME);
 });

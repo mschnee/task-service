@@ -1,12 +1,25 @@
 version: '3'
 volumes:
     testvol:
+    testredis:
 services:
     task_db:
+        image: mongo:3.6.11
+        ports:
+            - 27017:27017
+        expose:
+            - 27017
         volumes:
             - testvol:/data/db
         environment:
             - MONGO_INITDB_ROOT_USERNAME=test_mongo_user
             - MONGO_INITDB_ROOT_PASSWORD=test_mongo_password
     task_cache:
+        image: redis:5.0.4
+        volumes:
+            - testredis:/data
+        ports:
+            - 6379:6379
+        expose:
+            - 6379
         command: redis-server --appendonly yes --requirepass test_redis_password

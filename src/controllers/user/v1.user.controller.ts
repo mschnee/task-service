@@ -40,16 +40,16 @@ export class V1UserController {
 
         return new Promise((resolve, reject) => {
             try {
-                bcrypt.compare(login.password, user.password, (err, res) => {
-                    if (err) {
-                        reject(err);
+                bcrypt.compare(login.password, user.password, (bcryptErr, res) => {
+                    if (bcryptErr) {
+                        reject(bcryptErr);
                     } else {
                         if (!res) {
                             throw new HttpErrors.Forbidden();
                         }
-                        jwt.sign(user.toObject(), process.env.JWT_SECRET || '', async (err, token) => {
-                            if (err) {
-                                reject(err);
+                        jwt.sign(user.toObject(), process.env.JWT_SECRET || '', async (signError, token) => {
+                            if (signError) {
+                                reject(signError);
                             } else {
                                 await this.cachedUserRepo.set(
                                     user.id,

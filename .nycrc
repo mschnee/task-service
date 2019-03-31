@@ -1,10 +1,12 @@
 {
     "include": [
-        "src/**/*.ts"
+        "dist/**/*.js"
     ],
     "exclude": [
-        "src/**/__tests/**"
+        "dist/**/__tests/**"
     ],
+    "sourceMap": true,
+    "instrument": true,
     "cache": true,
     "all": true
 }
