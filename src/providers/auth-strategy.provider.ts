@@ -1,13 +1,13 @@
+import {AuthenticationBindings, AuthenticationMetadata} from '@loopback/authentication';
+import {inject, Provider, ValueOrPromise} from '@loopback/context';
+import {repository} from '@loopback/repository';
 import * as bcrypt from 'bcrypt';
 import {Strategy} from 'passport';
+import {ExtractJwt, Strategy as JwtStrategy, VerifiedCallback} from 'passport-jwt';
 import {Strategy as LocalStrategy} from 'passport-local';
-import {Strategy as JwtStrategy, ExtractJwt, VerifiedCallback} from 'passport-jwt';
-import {Provider, inject, ValueOrPromise} from '@loopback/context';
-import {AuthenticationBindings, AuthenticationMetadata, UserProfile} from '@loopback/authentication';
-import {repository} from '@loopback/repository';
 
-import {CachedUserModelRepository, UserRepository} from '../repositories';
 import {User} from '../models';
+import {CachedUserModelRepository, UserRepository} from '../repositories';
 
 export class AuthStrategyProvider implements Provider<Strategy | undefined> {
     constructor(
@@ -19,7 +19,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined> {
         private userRepo: UserRepository,
     ) {}
 
-    value(): ValueOrPromise<Strategy | undefined> {
+    public value(): ValueOrPromise<Strategy | undefined> {
         // The function was not decorated, so we shouldn't attempt authentication
         if (!this.metadata) {
             return undefined;
@@ -48,7 +48,12 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined> {
         }
     }
 
-    async verifyHttp(req: any, email: string, password: string, done: (error: any, user?: any) => void) {
+    public async verifyHttp(
+        req: any,
+        email: string,
+        password: string,
+        done: (error: any, user?: any) => void,
+    ) {
         const user = await this.userRepo.findOne({
             where: {
                 email,
@@ -62,7 +67,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined> {
         }
     }
 
-    async verifyJwt(jwt_payload: any, done: VerifiedCallback) {
+    public async verifyJwt(jwt_payload: any, done: VerifiedCallback) {
         const userId = jwt_payload.id;
         const cachedUser = await this.cachedUserRepo.get(userId);
         if (cachedUser) {

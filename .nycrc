@@ -3,7 +3,7 @@
         "dist/**/*.js"
     ],
     "exclude": [
-        "dist/**/__tests/**"
+        "dist/**/__tests__/**"
     ],
     "sourceMap": true,
     "instrument": true,

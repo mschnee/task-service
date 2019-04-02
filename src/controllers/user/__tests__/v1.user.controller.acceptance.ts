@@ -44,7 +44,9 @@ test('Should let me create a user', async t => {
     t.is(loginResponse.status, 200);
     t.truthy(loginResponse.body.token);
 
-    const successfulWhoami = await client.get('/v1/user/whoami').set('Authorization', `bearer ${loginResponse.body.token}`);
+    const successfulWhoami = await client
+        .get('/v1/user/whoami')
+        .set('Authorization', `bearer ${loginResponse.body.token}`);
 
     t.is(successfulWhoami.status, 200);
     t.is(successfulWhoami.text, TEST_USERNAME);
@@ -77,4 +79,19 @@ test('Re-creating the same user should be forbidden', async t => {
         });
 
     t.is(createResponse2.status, 409);
+});
+
+const NOT_USERNAME = '__test_notauser@test.com';
+const NOT_PASSWORD = 'anyl1ttl3oldp4ssword';
+
+test('Shouldnt log into a non-existant user', async t => {
+    const loginResponse = await client
+        .post('/v1/user/login')
+        .set('Content-Type', 'application/json')
+        .send({
+            email: NOT_USERNAME,
+            password: NOT_PASSWORD,
+        });
+
+    t.is(loginResponse.status, 403);
 });

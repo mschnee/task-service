@@ -1,4 +1,15 @@
 {
   "$schema": "http://json.schemastore.org/tslint",
-  "extends": ["@loopback/tslint-config/tslint.common.json"]
+  "extends": ["@loopback/tslint-config/tslint.common.json"],
+  "rules": {
+    "semicolon": true,
+    "import-spacing": true,
+    "ordered-imports": true,
+    "await-promise": true,
+    "curly": true,
+    "deprecation": true,
+    "indent": true,
+    "member-access": true,
+    "member-ordering": [true, {"order": "statics-first", "alphabetize": true}]
+  }
 }

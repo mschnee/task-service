@@ -1,19 +1,22 @@
 // Uncomment these imports to begin using these cool features!
 
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+import {inject} from '@loopback/context';
+import {ParameterObject} from '@loopback/openapi-v3-types';
+import {get, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import {AuthenticationBindings, authenticate} from '@loopback/authentication';
-import {inject} from '@loopback/context';
-import {get, post, requestBody, HttpErrors, param} from '@loopback/rest';
-import {ParameterObject} from '@loopback/openapi-v3-types';
 
 import {repository} from '@loopback/repository';
 
-import {UserRepository, CachedUserModelRepository} from '../../repositories';
 import {User} from '../../models';
+import {CachedUserModelRepository, UserRepository} from '../../repositories';
 
 const userSpec = {
-    'application/json': {schema: {'x-ts-type': User.CachedModel}, example: new User.CachedModel({email: 'user@test.com', userId: '1a4'})},
+    'application/json': {
+        schema: {'x-ts-type': User.CachedModel},
+        example: new User.CachedModel({email: 'user@test.com', userId: '1a4'}),
+    },
 };
 
 const authSpec: ParameterObject = {
@@ -33,81 +36,6 @@ export class V1UserController {
         private cachedUserRepo: CachedUserModelRepository,
     ) {}
 
-    @authenticate('JwtStrategy')
-    @get('/v1/user/whoami', {
-        responses: {
-            '200': {
-                description: "Responds with the user's email address",
-                content: {'application/text': {schema: {type: 'string', example: 'user@test.com'}}},
-            },
-        },
-    })
-    async whoAmI(@inject(AuthenticationBindings.CURRENT_USER) user: User.CachedModel, @param(authSpec) auth: string): Promise<string> {
-        return user.email;
-    }
-
-    @post('/v1/user/login', {
-        responses: {
-            '200': {
-                description: 'User logged-in successfully',
-                content: userSpec,
-            },
-            '401': {
-                description: 'Failed to authenticate',
-            },
-        },
-    })
-    async login(@requestBody() login: User.LoginRequest): Promise<User.LoginResponse> {
-        const userResult = await this.userRepo.find({
-            where: {
-                email: login.email,
-            },
-        });
-
-        if (!userResult || userResult.length !== 1) {
-            throw new HttpErrors.Forbidden();
-        }
-        const user = userResult[0];
-
-        return new Promise((resolve, reject) => {
-            try {
-                bcrypt.compare(login.password, user.password, (bcryptErr, res) => {
-                    if (bcryptErr) {
-                        reject(bcryptErr);
-                    } else {
-                        if (!res) {
-                            throw new HttpErrors.Forbidden();
-                        }
-                        jwt.sign(user.toObject(), process.env.JWT_SECRET || '', async (signError, token) => {
-                            if (signError) {
-                                reject(signError);
-                            } else {
-                                await this.cachedUserRepo.set(
-                                    user.id,
-                                    new User.CachedModel({
-                                        userId: user.id,
-                                        email: user.email,
-                                    }),
-                                    {
-                                        ttl: 5000,
-                                    },
-                                );
-
-                                resolve(
-                                    new User.LoginResponse({
-                                        token,
-                                    }),
-                                );
-                            }
-                        });
-                    }
-                });
-            } catch (e) {
-                reject(e);
-            }
-        });
-    }
-
     @post('/v1/user/create', {
         responses: {
             '200': {
@@ -119,7 +47,7 @@ export class V1UserController {
             },
         },
     })
-    async create(
+    public async create(
         @requestBody()
         login: User.LoginRequest,
     ): Promise<User.CachedModel> {
@@ -154,5 +82,87 @@ export class V1UserController {
                 reject(e);
             }
         });
+    }
+
+    @post('/v1/user/login', {
+        responses: {
+            '200': {
+                description: 'User logged-in successfully',
+                content: userSpec,
+            },
+            '401': {
+                description: 'Failed to authenticate',
+            },
+        },
+    })
+    public async login(@requestBody() login: User.LoginRequest): Promise<User.LoginResponse> {
+        const userResult = await this.userRepo.find({
+            where: {
+                email: login.email,
+            },
+        });
+
+        if (!userResult || userResult.length !== 1) {
+            throw new HttpErrors.Forbidden();
+        }
+        const user = userResult[0];
+
+        return new Promise((resolve, reject) => {
+            try {
+                bcrypt.compare(login.password, user.password, (bcryptErr, res) => {
+                    if (bcryptErr) {
+                        reject(bcryptErr);
+                    } else {
+                        if (!res) {
+                            throw new HttpErrors.Forbidden();
+                        }
+                        jwt.sign(
+                            user.toObject(),
+                            process.env.JWT_SECRET || '',
+                            async (signError, token) => {
+                                if (signError) {
+                                    reject(signError);
+                                } else {
+                                    await this.cachedUserRepo.set(
+                                        user.id,
+                                        new User.CachedModel({
+                                            userId: user.id,
+                                            email: user.email,
+                                        }),
+                                        {
+                                            ttl: 5000,
+                                        },
+                                    );
+
+                                    resolve(
+                                        new User.LoginResponse({
+                                            token,
+                                        }),
+                                    );
+                                }
+                            },
+                        );
+                    }
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    @authenticate('JwtStrategy')
+    @get('/v1/user/whoami', {
+        responses: {
+            '200': {
+                description: "Responds with the user's email address",
+                content: {'application/text': {schema: {type: 'string', example: 'user@test.com'}}},
+            },
+        },
+    })
+    public async whoAmI(
+        @inject(AuthenticationBindings.CURRENT_USER) user: User.CachedModel,
+        @param(authSpec) auth: string,
+    ): Promise<string> {
+        return user.email;
     }
 }
