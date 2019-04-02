@@ -3,8 +3,8 @@ import {DefaultKeyValueRepository} from '@loopback/repository';
 import {RedisDataSource} from '../datasources';
 import {User} from '../models';
 
-export class CachedUserModelRepository extends DefaultKeyValueRepository<User.CachedModel> {
+export class CachedUserModelRepository extends DefaultKeyValueRepository<User.Model> {
     constructor(@inject('datasources.redis') dataSource: RedisDataSource) {
-        super(User.CachedModel, dataSource);
+        super(User.Model, dataSource);
     }
 }

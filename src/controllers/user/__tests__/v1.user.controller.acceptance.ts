@@ -10,11 +10,11 @@ let client: Client;
 const TEST_USERNAME = '__testemail@test.com';
 const TEST_PASSWORD = 'iamaprettyp4ssw04d!';
 
-test.beforeEach(async () => {
+test.before(async () => {
     ({app, client} = await setupApplication());
 });
 
-test.afterEach(async () => {
+test.after(async () => {
     await app.stop();
 });
 

@@ -1,9 +1,12 @@
 import {Entity, model, property} from '@loopback/repository';
-
 declare type TaskStatus = 'new' | 'complete';
-@model()
-export class TaskModel extends Entity {
 
+@model({
+    settings: {
+        hidden: ['userId'],
+    },
+})
+export class TaskModel extends Entity {
     @property({
         type: 'string',
     })
@@ -11,28 +14,33 @@ export class TaskModel extends Entity {
 
     @property({
         type: 'date',
-        required: true,
+        required: false,
     })
     public dueDate: string;
 
     @property({
         type: 'string',
-        id: true,
-        required: true,
+        id: false,
+        required: false,
     })
-    public id: string;
+    public id?: string;
+
     @property({
         type: 'string',
-        required: true,
+        required: false,
     })
     public name: string;
 
     @property({
-        type: 'enum',
-        required: true,
+        type: 'string',
+        required: false,
         default: 'new',
     })
     public status: TaskStatus;
+    @property({
+        type: 'string',
+    })
+    public userId: string;
 
     constructor(data?: Partial<TaskModel>) {
         super(data);

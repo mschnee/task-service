@@ -14,8 +14,8 @@ import {CachedUserModelRepository, UserRepository} from '../../repositories';
 
 const userSpec = {
     'application/json': {
-        schema: {'x-ts-type': User.CachedModel},
-        example: new User.CachedModel({email: 'user@test.com', userId: '1a4'}),
+        schema: {'x-ts-type': User.Model},
+        example: new User.Model({email: 'user@test.com', id: '1a4'}),
     },
 };
 
@@ -50,7 +50,7 @@ export class V1UserController {
     public async create(
         @requestBody()
         login: User.LoginRequest,
-    ): Promise<User.CachedModel> {
+    ): Promise<User.Model> {
         const userResult = await this.userRepo.find({
             where: {
                 email: login.email,
@@ -72,7 +72,7 @@ export class V1UserController {
                         });
                         const newUser = await this.userRepo.create(user);
                         resolve(
-                            new User.CachedModel({
+                            new User.Model({
                                 id: newUser.id,
                             }),
                         );
@@ -125,8 +125,8 @@ export class V1UserController {
                                 } else {
                                     await this.cachedUserRepo.set(
                                         user.id,
-                                        new User.CachedModel({
-                                            userId: user.id,
+                                        new User.Model({
+                                            id: user.id,
                                             email: user.email,
                                         }),
                                         {
@@ -160,7 +160,7 @@ export class V1UserController {
         },
     })
     public async whoAmI(
-        @inject(AuthenticationBindings.CURRENT_USER) user: User.CachedModel,
+        @inject(AuthenticationBindings.CURRENT_USER) user: User.Model,
         @param(authSpec) auth: string,
     ): Promise<string> {
         return user.email;

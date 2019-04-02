@@ -75,7 +75,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined> {
         } else {
             const user = await this.userRepo.findById(userId);
             if (user) {
-                const tokenUserObject = new User.CachedModel({
+                const tokenUserObject = new User.Model({
                     id: user.id,
                     email: user.email,
                 });
