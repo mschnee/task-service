@@ -62,7 +62,7 @@
     "@loopback/rest": "^1.8.0",
     "@loopback/rest-explorer": "^1.1.11",
     "@loopback/service-proxy": "^1.0.10",
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.0",
     "env-cmd": "^8.0.2",
     "jsonwebtoken": "^8.5.1",
     "loopback-connector-kv-redis": "^3.0.1",
